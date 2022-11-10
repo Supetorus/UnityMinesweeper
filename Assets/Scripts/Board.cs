@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using System;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -14,10 +14,10 @@ public class Board : MonoBehaviour
 		public bool isFlagged;
 	}
 
-	public int m_Width;
-	public int m_Height;
-	public float m_TilesSize = 45f;
-	public Tile[,] m_Tiles{ get; private set; }
+	public int m_Width { get; private set; }
+	public int m_Height { get; private set; }
+	public Tile[,] m_Tiles { get; private set; }
+	public float m_TilesSize { get; private set; }
 
 	private System.Random rng;
 	private int m_TileCount;
@@ -28,6 +28,7 @@ public class Board : MonoBehaviour
 	{
 		rng = new System.Random();
 		RectTransform t = GetComponent<RectTransform>();
+		m_TilesSize = t.sizeDelta.x / 8.0f;
 		m_Width = (int)(t.sizeDelta.x / m_TilesSize);
 		m_Height = (int)(t.sizeDelta.y / m_TilesSize);
 		m_TileCount = m_Width * m_Height;
@@ -45,38 +46,37 @@ public class Board : MonoBehaviour
 		int mineCount = m_Width * m_Height / 5;
 		m_MineTileCount = mineCount;
 
-		while(mineCount > 0)
+		while (mineCount > 0)
 		{
 			int x = rng.Next(0, m_Width);
 			int y = rng.Next(0, m_Height);
 
-			if(!m_Tiles[x, y].isMine)
+			if (!m_Tiles[x, y].isMine)
 			{
 				m_Tiles[x, y].isMine = true;
 				--mineCount;
 
-				if(x > 0)
+				if (x > 0)
 				{
 					++m_Tiles[x - 1, y].adjacentMineCount;
-					if (y > 0) 
-					{ 
-						++m_Tiles[x - 1, y - 1].adjacentMineCount; 
-						++m_Tiles[x, y - 1].adjacentMineCount; 
+					if (y > 0)
+					{
+						++m_Tiles[x - 1, y - 1].adjacentMineCount;
+						++m_Tiles[x, y - 1].adjacentMineCount;
 					}
-					if (y < m_Height - 1) 
-					{ 
+					if (y < m_Height - 1)
+					{
 						++m_Tiles[x - 1, y + 1].adjacentMineCount;
 						++m_Tiles[x, y + 1].adjacentMineCount;
 					}
 				}
 
-				if(x < m_Width - 1)
+				if (x < m_Width - 1)
 				{
 					++m_Tiles[x + 1, y].adjacentMineCount;
 					if (y > 0) { ++m_Tiles[x + 1, y - 1].adjacentMineCount; }
 					if (y < m_Height - 1) { ++m_Tiles[x + 1, y + 1].adjacentMineCount; }
 				}
-
 			}
 		}
 	}
@@ -87,13 +87,13 @@ public class Board : MonoBehaviour
 
 		Tile tile = m_Tiles[x, y];
 
-		if(tile.isMine && !tile.isFlagged)
+		if (tile.isMine && !tile.isFlagged)
 		{
 			//TODO: Visual change in tile
 			//TODO: Lose popup
 			Debug.Log("You Lose!");
 		}
-		else if(!tile.isCleared && !tile.isFlagged)
+		else if (!tile.isCleared && !tile.isFlagged)
 		{
 			if (tile.adjacentMineCount == 0)
 			{
@@ -127,7 +127,7 @@ public class Board : MonoBehaviour
 				++m_ClearedTileCount;
 			}
 
-			if(m_ClearedTileCount == m_TileCount - m_MineTileCount)
+			if (m_ClearedTileCount == m_TileCount - m_MineTileCount)
 			{
 				//TODO: Win popup
 				Debug.Log("You Win!");

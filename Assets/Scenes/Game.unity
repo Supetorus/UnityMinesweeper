@@ -660,7 +660,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -144}
-  m_SizeDelta: {x: 888.4, y: 1825}
+  m_SizeDelta: {x: 800, y: 1800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1136907750
 MonoBehaviour:
@@ -674,9 +674,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cdbcdc44ddf7674db29206fdc87890d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Width: 0
-  m_Height: 0
-  m_TilesSize: 100
 --- !u!114 &1136907751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,10 +725,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 10
-    m_Right: 10
-    m_Top: 10
-    m_Bottom: 10
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
@@ -751,14 +748,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93a45a9d3be3f642b1d1d9f04dea6cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RectTransform: {fileID: 0}
-  board: {fileID: 1136907750}
-  tilePrefab: {fileID: 5089198630271439455, guid: 4dee6fc1ba62e934cac946b187d85474, type: 3}
-  gridLayout: {fileID: 1136907753}
-  background: {fileID: -474310738, guid: 07d911f2f6bb5ea42bdf0c4118b6ec90, type: 3}
-  cover: {fileID: 789241096, guid: 06d793d682c9546428f6756a593c446c, type: 3}
-  flag: {fileID: 1365705607, guid: 6812d576e8fa6864cbcae0a34275f17d, type: 3}
-  bomb: {fileID: 21300000, guid: e66a6cf1ae5576749819a1f9ce9714e7, type: 3}
+  m_TilePrefab: {fileID: 5089198630271439455, guid: 4dee6fc1ba62e934cac946b187d85474, type: 3}
+  m_Background: {fileID: -1617326173, guid: 8c87dc18448348446980894f78f9a695, type: 3}
+  m_Cover: {fileID: 0}
+  m_Flag: {fileID: 0}
+  m_Bomb: {fileID: 0}
 --- !u!1 &2119442992
 GameObject:
   m_ObjectHideFlags: 0
