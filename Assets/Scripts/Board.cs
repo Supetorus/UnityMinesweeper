@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-	struct Tile
+	public struct Tile
 	{
 		int adjacentMineCount;
 		bool isMine;
-		bool isCleard;
+		bool isCleared;
+		bool isFlagged;
 	}
 
-	int m_Width;
-	int m_Height;
-	float m_TilesSize = 45f;
-	Tile[,] m_Tiles;
+	public int m_Width;
+	public int m_Height;
+	public float m_TilesSize = 45f;
+	public Tile[,] m_Tiles{ get; private set; }
 
 	void Start()
 	{
@@ -23,13 +24,22 @@ public class Board : MonoBehaviour
 		m_Width = (int)(t.sizeDelta.x / m_TilesSize);
 		m_Height = (int)(t.sizeDelta.y / m_TilesSize);
 
-		m_Tiles = new Tile[m_Width,m_Height];
+		GenerateTiles();
 
 		Debug.Log(string.Format("width: {0}, height: {1}", m_Width, m_Height));
 	}
 
 	void Update()
 	{
+
+	}
+
+	void GenerateTiles()
+	{
+		m_Tiles = new Tile[m_Width, m_Height];
+
+		int mineCount = m_Width * m_Height / 5;
+
 
 	}
 }
