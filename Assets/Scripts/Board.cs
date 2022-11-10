@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using System;
 
 public class Board : MonoBehaviour
 {
 	public struct Tile
 	{
-		int adjacentMineCount;
-		bool isMine;
-		bool isCleared;
-		bool isFlagged;
+		public int adjacentMineCount;
+		public bool isMine;
+		public bool isCleared;
+		public bool isFlagged;
 	}
 
 	public int m_Width;
@@ -18,8 +19,11 @@ public class Board : MonoBehaviour
 	public float m_TilesSize = 45f;
 	public Tile[,] m_Tiles{ get; private set; }
 
-	void Start()
+	private System.Random rng;
+
+	void Awake()
 	{
+		rng = new System.Random();
 		RectTransform t = GetComponent<RectTransform>();
 		m_Width = (int)(t.sizeDelta.x / m_TilesSize);
 		m_Height = (int)(t.sizeDelta.y / m_TilesSize);
@@ -40,6 +44,39 @@ public class Board : MonoBehaviour
 
 		int mineCount = m_Width * m_Height / 5;
 
+		while(mineCount > 0)
+		{
+			int x = rng.Next(0, m_Width);
+			int y = rng.Next(0, m_Height);
 
+			if(!m_Tiles[x, y].isMine)
+			{
+				m_Tiles[x, y].isMine = true;
+
+				if(x > 0)
+				{
+					++m_Tiles[x - 1, y].adjacentMineCount;
+					if (y > 0) 
+					{ 
+						++m_Tiles[x - 1, y - 1].adjacentMineCount; 
+						++m_Tiles[x, y - 1].adjacentMineCount; 
+					}
+					if (y < m_Height - 1) 
+					{ 
+						++m_Tiles[x - 1, y + 1].adjacentMineCount;
+						++m_Tiles[x, y + 1].adjacentMineCount;
+					}
+				}
+
+				if(x < m_Width - 1)
+				{
+					++m_Tiles[x + 1, y].adjacentMineCount;
+					if (y > 0) { ++m_Tiles[x + 1, y - 1].adjacentMineCount; }
+					if (y < m_Height - 1) { ++m_Tiles[x + 1, y + 1].adjacentMineCount; }
+				}
+
+				--mineCount;
+			}
+		}
 	}
 }
