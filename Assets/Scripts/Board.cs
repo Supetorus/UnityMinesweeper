@@ -132,4 +132,10 @@ public class Board : MonoBehaviour
 			}
 		}
 	}
+
+	public void ToggleFlag(int x, int y)
+	{
+		//TODO: Visual change in tile
+		m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
+	}
 }
