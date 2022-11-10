@@ -83,6 +83,8 @@ public class Board : MonoBehaviour
 
 	public void ClickTile(int x, int y)
 	{
+		Debug.Log(string.Format("Clicked Tile: ({0}, {1})", x, y));
+
 		Tile tile = m_Tiles[x, y];
 
 		if(tile.isMine && !tile.isFlagged)
