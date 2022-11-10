@@ -1007,8 +1007,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 1136907750}
-  tilePrefab: {fileID: 4167724499332596013, guid: 93972089142325c469db3772e6d3af2f, type: 3}
+  tilePrefab: {fileID: 5089198630271439455, guid: 4dee6fc1ba62e934cac946b187d85474, type: 3}
   gridLayout: {fileID: 1136907753}
+  background: {fileID: -474310738, guid: 07d911f2f6bb5ea42bdf0c4118b6ec90, type: 3}
+  cover: {fileID: 789241096, guid: 06d793d682c9546428f6756a593c446c, type: 3}
+  flag: {fileID: 1365705607, guid: 6812d576e8fa6864cbcae0a34275f17d, type: 3}
+  bomb: {fileID: 21300000, guid: e66a6cf1ae5576749819a1f9ce9714e7, type: 3}
 --- !u!1 &1396993932
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,7 +1119,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   background: {fileID: 0}
-  cover: {fileID: 0}
   foreground: {fileID: 0}
 --- !u!4 &2055952250
 Transform:

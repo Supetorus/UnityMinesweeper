@@ -7,8 +7,4 @@ public class TileDisplay : MonoBehaviour
 {
 	public Image background;
 	public Image foreground;
-	private void Start()
-	{
-		print(GetComponent<RectTransform>().sizeDelta);
-	}
 }
