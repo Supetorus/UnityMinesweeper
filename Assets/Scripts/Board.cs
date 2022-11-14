@@ -108,6 +108,7 @@ public class Board : MonoBehaviour
 					{
 						//TODO: Visual change in tiles
 						m_Tiles[pos.x, pos.y].isCleared = true;
+						m_Tiles[pos.x, pos.y].isFlagged = false;
 						++m_ClearedTileCount;
 
 						if (m_Tiles[pos.x, pos.y].adjacentMineCount == 0)
