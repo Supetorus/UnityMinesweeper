@@ -85,17 +85,15 @@ public class Board : MonoBehaviour
 	{
 		Debug.Log(string.Format("Clicked Tile: ({0}, {1})", x, y));
 
-		Tile tile = m_Tiles[x, y];
-
-		if (tile.isMine && !tile.isFlagged)
+		if (m_Tiles[x, y].isMine && !m_Tiles[x, y].isFlagged)
 		{
 			//TODO: Visual change in tile
 			//TODO: Lose popup
 			Debug.Log("You Lose!");
 		}
-		else if (!tile.isCleared && !tile.isFlagged)
+		else if (!m_Tiles[x, y].isCleared && !m_Tiles[x, y].isFlagged)
 		{
-			if (tile.adjacentMineCount == 0)
+			if (m_Tiles[x, y].adjacentMineCount == 0)
 			{
 				Stack<Vector2Int> tiles = new Stack<Vector2Int>();
 				tiles.Push(new Vector2Int(x, y));
@@ -104,8 +102,9 @@ public class Board : MonoBehaviour
 				{
 					Vector2Int pos = tiles.Pop();
 
-					if (pos.x >= 0 && pos.y >= 0 && pos.x <= m_Width - 1 && pos.y <= m_Height - 1 && !m_Tiles[pos.x, pos.y].isCleared)
+					if (pos.x >= 0 && pos.y >= 0 && pos.x < m_Width && pos.y < m_Height && !m_Tiles[pos.x, pos.y].isCleared)
 					{
+						Debug.Log("Clear");
 						//TODO: Visual change in tiles
 						m_Tiles[pos.x, pos.y].isCleared = true;
 						m_Tiles[pos.x, pos.y].isFlagged = false;
@@ -123,8 +122,9 @@ public class Board : MonoBehaviour
 			}
 			else
 			{
+				Debug.Log("Clear");
 				//TODO: Visual change in tile
-				tile.isCleared = true;
+				m_Tiles[x, y].isCleared = true;
 				++m_ClearedTileCount;
 			}
 
