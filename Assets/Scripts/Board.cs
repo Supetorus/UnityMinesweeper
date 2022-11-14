@@ -104,7 +104,7 @@ public class Board : MonoBehaviour
 				{
 					Vector2Int pos = tiles.Pop();
 
-					if (pos.x > 0 && pos.y > 0 && pos.x < m_Width - 1 && pos.y < m_Height - 1 && !m_Tiles[pos.x, pos.y].isCleared)
+					if (pos.x >= 0 && pos.y >= 0 && pos.x <= m_Width - 1 && pos.y <= m_Height - 1 && !m_Tiles[pos.x, pos.y].isCleared)
 					{
 						//TODO: Visual change in tiles
 						m_Tiles[pos.x, pos.y].isCleared = true;
