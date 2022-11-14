@@ -35,15 +35,13 @@ public class Board : MonoBehaviour
 		m_ClearedTileCount = 0;
 
 		GenerateTiles();
-
-		Debug.Log(string.Format("width: {0}, height: {1}", m_Width, m_Height));
 	}
 
 	private void GenerateTiles()
 	{
 		m_Tiles = new Tile[m_Width, m_Height];
 
-		int mineCount = m_Width * m_Height / 5;
+		int mineCount = m_Width * m_Height / 4;
 		m_MineTileCount = mineCount;
 
 		while (mineCount > 0)
@@ -59,16 +57,8 @@ public class Board : MonoBehaviour
 				if (x > 0)
 				{
 					++m_Tiles[x - 1, y].adjacentMineCount;
-					if (y > 0)
-					{
-						++m_Tiles[x - 1, y - 1].adjacentMineCount;
-						++m_Tiles[x, y - 1].adjacentMineCount;
-					}
-					if (y < m_Height - 1)
-					{
-						++m_Tiles[x - 1, y + 1].adjacentMineCount;
-						++m_Tiles[x, y + 1].adjacentMineCount;
-					}
+					if (y > 0) { ++m_Tiles[x - 1, y - 1].adjacentMineCount; }
+					if (y < m_Height - 1) { ++m_Tiles[x - 1, y + 1].adjacentMineCount; }
 				}
 
 				if (x < m_Width - 1)
@@ -77,17 +67,17 @@ public class Board : MonoBehaviour
 					if (y > 0) { ++m_Tiles[x + 1, y - 1].adjacentMineCount; }
 					if (y < m_Height - 1) { ++m_Tiles[x + 1, y + 1].adjacentMineCount; }
 				}
+
+				if (y > 0) { ++m_Tiles[x, y - 1].adjacentMineCount; }
+				if (y < m_Height - 1) { ++m_Tiles[x, y + 1].adjacentMineCount; }
 			}
 		}
 	}
 
 	public void ClickTile(int x, int y)
 	{
-		Debug.Log(string.Format("Clicked Tile: ({0}, {1})", x, y));
-
 		if (m_Tiles[x, y].isMine && !m_Tiles[x, y].isFlagged)
 		{
-			//TODO: Visual change in tile
 			//TODO: Lose popup
 			Debug.Log("You Lose!");
 		}
@@ -104,8 +94,6 @@ public class Board : MonoBehaviour
 
 					if (pos.x >= 0 && pos.y >= 0 && pos.x < m_Width && pos.y < m_Height && !m_Tiles[pos.x, pos.y].isCleared)
 					{
-						Debug.Log("Clear");
-						//TODO: Visual change in tiles
 						m_Tiles[pos.x, pos.y].isCleared = true;
 						m_Tiles[pos.x, pos.y].isFlagged = false;
 						++m_ClearedTileCount;
@@ -116,14 +104,16 @@ public class Board : MonoBehaviour
 							tiles.Push(new Vector2Int(pos.x + 1, pos.y));
 							tiles.Push(new Vector2Int(pos.x, pos.y - 1));
 							tiles.Push(new Vector2Int(pos.x, pos.y + 1));
+							tiles.Push(new Vector2Int(pos.x - 1, pos.y - 1));
+							tiles.Push(new Vector2Int(pos.x + 1, pos.y + 1));
+							tiles.Push(new Vector2Int(pos.x - 1, pos.y + 1));
+							tiles.Push(new Vector2Int(pos.x + 1, pos.y - 1));
 						}
 					}
 				}
 			}
 			else
 			{
-				Debug.Log("Clear");
-				//TODO: Visual change in tile
 				m_Tiles[x, y].isCleared = true;
 				++m_ClearedTileCount;
 			}
@@ -138,7 +128,6 @@ public class Board : MonoBehaviour
 
 	public void ToggleFlag(int x, int y)
 	{
-		//TODO: Visual change in tile
 		m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
 	}
 }
