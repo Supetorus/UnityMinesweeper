@@ -22,6 +22,7 @@ public class BoardDisplay : MonoBehaviour
 	public Sprite m_Bomb;
 	public GameObject m_WinScreen;
 	public GameObject m_LoseScreen;
+	public Color[] colors = new Color[8];
 
 	void Start()
 	{
@@ -124,6 +125,7 @@ public class BoardDisplay : MonoBehaviour
 					else if (m_Board.m_Tiles[x, y].adjacentMineCount != 0)
 					{
 						m_Tiles[x, y].mineCount.text = m_Board.m_Tiles[x, y].adjacentMineCount.ToString();
+						m_Tiles[x, y].mineCount.color = colors[m_Board.m_Tiles[x, y].adjacentMineCount-1];
 					}
 				}
 			}

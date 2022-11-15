@@ -961,12 +961,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TilePrefab: {fileID: 5089198630271439455, guid: 4dee6fc1ba62e934cac946b187d85474, type: 3}
-  m_Background: {fileID: -1356405628, guid: 06d793d682c9546428f6756a593c446c, type: 3}
-  m_Cover: {fileID: -474310738, guid: 07d911f2f6bb5ea42bdf0c4118b6ec90, type: 3}
+  m_Background: {fileID: 1784192389, guid: ad7b63adf5daa4a40903a570bf115061, type: 3}
+  m_Cover: {fileID: -1789242359, guid: ad7b63adf5daa4a40903a570bf115061, type: 3}
   m_Flag: {fileID: 1365705607, guid: 6812d576e8fa6864cbcae0a34275f17d, type: 3}
   m_Bomb: {fileID: 21300000, guid: e66a6cf1ae5576749819a1f9ce9714e7, type: 3}
   m_WinScreen: {fileID: 1969745128}
   m_LoseScreen: {fileID: 866937388}
+  colors:
+  - {r: 0, g: 0, b: 0.6886792, a: 1}
+  - {r: 0, g: 0.6037736, b: 0, a: 1}
+  - {r: 0.8113208, g: 0, b: 0, a: 1}
+  - {r: 0.56825745, g: 0, b: 0.754717, a: 1}
+  - {r: 0.5019608, g: 0, b: 0, a: 1}
+  - {r: 0, g: 0.6603774, b: 0.5438402, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
+  - {r: 0.29803923, g: 0.2901961, b: 0.29803923, a: 1}
 --- !u!1 &1658928246
 GameObject:
   m_ObjectHideFlags: 0
