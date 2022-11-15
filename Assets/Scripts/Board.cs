@@ -108,16 +108,6 @@ public class Board : MonoBehaviour
 		{
 			m_FirstClick = false;
 
-			m_Tiles[x, y].isSafe = true;
-			m_Tiles[x - 1, y].isSafe = true;
-			m_Tiles[x + 1, y].isSafe = true;
-			m_Tiles[x, y - 1].isSafe = true;
-			m_Tiles[x, y + 1].isSafe = true;
-			m_Tiles[x - 1, y - 1].isSafe = true;
-			m_Tiles[x + 1, y + 1].isSafe = true;
-			m_Tiles[x + 1, y - 1].isSafe = true;
-			m_Tiles[x = 1, y + 1].isSafe = true;
-
 			if (x > 0)
 			{
 				m_Tiles[x - 1, y].isSafe = true;
