@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class InputWraper
 {
+
+	
 	public static bool GetInputLocationOnRect(RectTransform rect, out Vector2 tapPosition)
 	{
 		bool isClicked = Input.GetMouseButtonDown((int)MouseButton.Left);
-		bool isTouch = Input.touchCount > 0;
+		bool isTouch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
 
 		if (isClicked || isTouch)
 		{
