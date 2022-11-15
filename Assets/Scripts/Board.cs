@@ -107,6 +107,7 @@ public class Board : MonoBehaviour
 		if (m_FirstClick)
 		{
 			m_FirstClick = false;
+			m_Tiles[x, y].isSafe = true;
 
 			if (x > 0)
 			{
