@@ -44,6 +44,7 @@ public class Board : MonoBehaviour
 		m_TileCount = m_Width * m_Height;
 		m_Tiles = new Tile[m_Width, m_Height];
 
+		m_MineTileCount = m_Width * m_Height / 5;
 		m_ClearedTileCount = 0;
 		m_FirstClick = true;
 	}
@@ -69,8 +70,7 @@ public class Board : MonoBehaviour
 
 	private void GenerateTiles()
 	{
-		int mineCount = m_Width * m_Height / 5;
-		m_MineTileCount = mineCount;
+		int mineCount = m_MineTileCount;
 
 		while (mineCount > 0)
 		{
@@ -181,5 +181,23 @@ public class Board : MonoBehaviour
 	public void ToggleFlag(int x, int y)
 	{
 		m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
+	}
+
+	public void ResetBoard()
+	{
+		m_FirstClick = true;
+		m_ClearedTileCount = 0;
+
+		for (int x = 0; x < m_Width; ++x)
+		{
+			for (int y = 0; y < m_Height; ++y)
+			{
+				m_Tiles[x, y].isCleared = false;
+				m_Tiles[x, y].isMine = false;
+				m_Tiles[x, y].isFlagged = false;
+				m_Tiles[x, y].isSafe = false;
+				m_Tiles[x, y].adjacentMineCount = 0;
+			}
+		}
 	}
 }
