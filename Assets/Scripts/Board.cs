@@ -45,7 +45,7 @@ public class Board : MonoBehaviour
 
 	private void Update()
 	{
-#ifdef UNITY_EDITOR
+#if UNITY_EDITOR
 		if(Input.GetKeyDown(KeyCode.W))
 		{
 			for (int x = 0; x < m_Width; ++x)
@@ -55,6 +55,9 @@ public class Board : MonoBehaviour
 					m_Tiles[x, y].isCleared = !m_Tiles[x, y].isMine;
 				}
 			}
+
+			m_ClearedTileCount = m_TileCount - m_MineTileCount;
+			m_OnWin.Invoke();
 		}
 #endif
 	}
@@ -104,7 +107,10 @@ public class Board : MonoBehaviour
 			m_FirstClick = false;
 
 			//Move mines around here elsewhere
-
+			if(m_Tiles[x, y].adjacentMineCount > 0)
+			{
+				
+			}
 		}
 
 		if (m_Tiles[x, y].isMine && !m_Tiles[x, y].isFlagged)
