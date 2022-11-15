@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 
 public class Board : MonoBehaviour
@@ -18,14 +19,19 @@ public class Board : MonoBehaviour
 	public int m_Height { get; private set; }
 	public Tile[,] m_Tiles { get; private set; }
 	public float m_TilesSize { get; private set; }
+	public UnityEvent m_OnLose { get; private set; }
+	public UnityEvent m_OnWin { get; private set; }
 
 	private System.Random rng;
 	private int m_TileCount;
 	private int m_ClearedTileCount;
 	private int m_MineTileCount;
+	private bool m_FirstClick;
 
 	private void Awake()
 	{
+		m_OnLose = new UnityEvent();
+		m_OnWin = new UnityEvent();
 		rng = new System.Random();
 		RectTransform t = GetComponent<RectTransform>();
 		m_TilesSize = t.sizeDelta.x / 8.0f;
@@ -37,11 +43,28 @@ public class Board : MonoBehaviour
 		GenerateTiles();
 	}
 
+	private void Update()
+	{
+#ifdef UNITY_EDITOR
+		if(Input.GetKeyDown(KeyCode.W))
+		{
+			for (int x = 0; x < m_Width; ++x)
+			{
+				for (int y = 0; y < m_Width; ++y)
+				{
+					m_Tiles[x, y].isCleared = !m_Tiles[x, y].isMine;
+				}
+			}
+		}
+#endif
+	}
+
 	private void GenerateTiles()
 	{
 		m_Tiles = new Tile[m_Width, m_Height];
+		m_FirstClick = true;
 
-		int mineCount = m_Width * m_Height / 4;
+		int mineCount = m_Width * m_Height / 5;
 		m_MineTileCount = mineCount;
 
 		while (mineCount > 0)
@@ -76,10 +99,18 @@ public class Board : MonoBehaviour
 
 	public void ClickTile(int x, int y)
 	{
+		if(m_FirstClick)
+		{
+			m_FirstClick = false;
+
+			//Move mines around here elsewhere
+
+		}
+
 		if (m_Tiles[x, y].isMine && !m_Tiles[x, y].isFlagged)
 		{
-			//TODO: Lose popup
-			Debug.Log("You Lose!");
+			m_Tiles[x, y].isCleared = true;
+			m_OnLose.Invoke();
 		}
 		else if (!m_Tiles[x, y].isCleared && !m_Tiles[x, y].isFlagged)
 		{
@@ -120,8 +151,7 @@ public class Board : MonoBehaviour
 
 			if (m_ClearedTileCount == m_TileCount - m_MineTileCount)
 			{
-				//TODO: Win popup
-				Debug.Log("You Win!");
+				m_OnWin.Invoke();
 			}
 		}
 	}
