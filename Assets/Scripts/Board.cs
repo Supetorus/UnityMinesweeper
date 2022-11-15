@@ -13,12 +13,13 @@ public class Board : MonoBehaviour
 		public bool isMine;
 		public bool isCleared;
 		public bool isFlagged;
+		public bool isSafe;
 	}
 
 	public int m_Width { get; private set; }
 	public int m_Height { get; private set; }
 	public Tile[,] m_Tiles { get; private set; }
-	public float m_TilesSize { get; private set; }
+	public float m_TileSize { get; private set; }
 	public UnityEvent m_OnLose { get; private set; }
 	public UnityEvent m_OnWin { get; private set; }
 
@@ -30,17 +31,21 @@ public class Board : MonoBehaviour
 
 	private void Awake()
 	{
+		RectTransform t = GetComponent<RectTransform>();
+
 		m_OnLose = new UnityEvent();
 		m_OnWin = new UnityEvent();
 		rng = new System.Random();
-		RectTransform t = GetComponent<RectTransform>();
-		m_TilesSize = t.sizeDelta.x / 8.0f;
-		m_Width = (int)(t.sizeDelta.x / m_TilesSize);
-		m_Height = (int)(t.sizeDelta.y / m_TilesSize);
-		m_TileCount = m_Width * m_Height;
-		m_ClearedTileCount = 0;
 
-		GenerateTiles();
+		m_TileSize = t.sizeDelta.x / 8.0f;
+
+		m_Width = (int)(t.sizeDelta.x / m_TileSize);
+		m_Height = (int)(t.sizeDelta.y / m_TileSize);
+		m_TileCount = m_Width * m_Height;
+		m_Tiles = new Tile[m_Width, m_Height];
+
+		m_ClearedTileCount = 0;
+		m_FirstClick = true;
 	}
 
 	private void Update()
@@ -50,7 +55,7 @@ public class Board : MonoBehaviour
 		{
 			for (int x = 0; x < m_Width; ++x)
 			{
-				for (int y = 0; y < m_Width; ++y)
+				for (int y = 0; y < m_Height; ++y)
 				{
 					m_Tiles[x, y].isCleared = !m_Tiles[x, y].isMine;
 				}
@@ -64,9 +69,6 @@ public class Board : MonoBehaviour
 
 	private void GenerateTiles()
 	{
-		m_Tiles = new Tile[m_Width, m_Height];
-		m_FirstClick = true;
-
 		int mineCount = m_Width * m_Height / 5;
 		m_MineTileCount = mineCount;
 
@@ -75,7 +77,7 @@ public class Board : MonoBehaviour
 			int x = rng.Next(0, m_Width);
 			int y = rng.Next(0, m_Height);
 
-			if (!m_Tiles[x, y].isMine)
+			if (!m_Tiles[x, y].isMine && !m_Tiles[x, y].isSafe)
 			{
 				m_Tiles[x, y].isMine = true;
 				--mineCount;
@@ -102,15 +104,38 @@ public class Board : MonoBehaviour
 
 	public void ClickTile(int x, int y)
 	{
-		if(m_FirstClick)
+		if (m_FirstClick)
 		{
 			m_FirstClick = false;
 
-			//Move mines around here elsewhere
-			if(m_Tiles[x, y].adjacentMineCount > 0)
+			m_Tiles[x, y].isSafe = true;
+			m_Tiles[x - 1, y].isSafe = true;
+			m_Tiles[x + 1, y].isSafe = true;
+			m_Tiles[x, y - 1].isSafe = true;
+			m_Tiles[x, y + 1].isSafe = true;
+			m_Tiles[x - 1, y - 1].isSafe = true;
+			m_Tiles[x + 1, y + 1].isSafe = true;
+			m_Tiles[x + 1, y - 1].isSafe = true;
+			m_Tiles[x = 1, y + 1].isSafe = true;
+
+			if (x > 0)
 			{
-				
+				m_Tiles[x - 1, y].isSafe = true;
+				if (y > 0) { m_Tiles[x - 1, y - 1].isSafe = true; }
+				if (y < m_Height - 1) { m_Tiles[x - 1, y + 1].isSafe = true; }
 			}
+
+			if (x < m_Width - 1)
+			{
+				m_Tiles[x + 1, y].isSafe = true;
+				if (y > 0) { m_Tiles[x + 1, y - 1].isSafe = true; }
+				if (y < m_Height - 1) { m_Tiles[x + 1, y + 1].isSafe = true; }
+			}
+
+			if (y > 0) { m_Tiles[x, y - 1].isSafe = true; }
+			if (y < m_Height - 1) { m_Tiles[x, y + 1].isSafe = true; }
+
+			GenerateTiles();
 		}
 
 		if (m_Tiles[x, y].isMine && !m_Tiles[x, y].isFlagged)
