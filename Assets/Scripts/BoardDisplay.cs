@@ -140,6 +140,11 @@ public class BoardDisplay : MonoBehaviour
 						m_Tiles[x, y].foreground.gameObject.SetActive(true);
 						m_Tiles[x, y].foreground.sprite = m_Flag;
 					}
+					else
+					{
+						m_Tiles[x, y].foreground.gameObject.SetActive(false);
+						m_Tiles[x, y].foreground.sprite = null;
+					}
 				}
 				else
 				{ // is cleared

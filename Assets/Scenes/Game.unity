@@ -976,8 +976,8 @@ MonoBehaviour:
   - {r: 0, g: 0.65882355, b: 0.54509807, a: 1}
   - {r: 0, g: 0, b: 0, a: 1}
   - {r: 0.29803923, g: 0.2901961, b: 0.29803923, a: 1}
-  m_HighscoreText: {fileID: 0}
-  m_CurrentTimeText: {fileID: 0}
+  m_HighscoreText: {fileID: 794363293}
+  m_CurrentTimeText: {fileID: 374793277}
 --- !u!1 &1658928246
 GameObject:
   m_ObjectHideFlags: 0
