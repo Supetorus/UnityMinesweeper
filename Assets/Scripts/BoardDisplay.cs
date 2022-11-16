@@ -26,26 +26,58 @@ public class BoardDisplay : MonoBehaviour
 
 	void Start()
 	{
+		// Setup component references
 		m_RectTransform = GetComponent<RectTransform>();
 		m_Board = GetComponent<Board>();
+		m_GridLayout = GetComponent<GridLayoutGroup>();
+
+		// Event Listeners
 		m_Board.m_OnLose.AddListener(OnLose);
 		m_Board.m_OnWin.AddListener(OnWin);
-		m_GridLayout = GetComponent<GridLayoutGroup>();
-		m_WinScreen.SetActive(false);
-		m_LoseScreen.SetActive(false);
+
+		// Miscellaneous
 		m_GridLayout.cellSize = new Vector2(m_Board.m_TileSize, m_Board.m_TileSize);
+
+		GenerateBoard();
+		Reset();
+	}
+
+	private void GenerateBoard()
+	{
 		m_Tiles = new TileDisplay[m_Board.m_Width, m_Board.m_Height];
 		for (int x = 0; x < m_Board.m_Width; ++x)
 		{
 			for (int y = 0; y < m_Board.m_Height; ++y)
 			{
-				m_Tiles[x, y] = Instantiate(m_TilePrefab, gameObject.transform);
-				m_Tiles[x, y].foreground.gameObject.SetActive(false);
-				m_Tiles[x, y].foreground.rectTransform.sizeDelta = new Vector2(m_Board.m_TileSize, m_Board.m_TileSize);
-				m_Tiles[x, y].background.GetComponent<Image>().sprite = m_Cover;
-				m_Tiles[x, y].background.rectTransform.sizeDelta = new Vector2(m_Board.m_TileSize, m_Board.m_TileSize);
+				ref TileDisplay tile = ref m_Tiles[x, y];
+				tile = Instantiate(m_TilePrefab, gameObject.transform);
+				tile.foreground.rectTransform.sizeDelta = new Vector2(m_Board.m_TileSize, m_Board.m_TileSize);
+				tile.background.rectTransform.sizeDelta = new Vector2(m_Board.m_TileSize, m_Board.m_TileSize);
+				//m_Tiles[x, y].foreground.gameObject.SetActive(false);
+				//m_Tiles[x, y].background.GetComponent<Image>().sprite = m_Cover;
 			}
 		}
+	}
+
+	void Reset()
+	{
+		for (int x = 0; x < m_Board.m_Width; ++x)
+		{
+			for (int y = 0; y < m_Board.m_Height; ++y)
+			{
+				ref TileDisplay tile = ref m_Tiles[x, y];
+				tile.background.gameObject.SetActive(true);
+				tile.background.sprite = m_Cover;
+				tile.foreground.gameObject.SetActive(false);
+				tile.foreground.sprite = null;
+				tile.mineCount.text = "";
+				//tile.mineCount.color = Color.black;
+			}
+		}
+		m_IsWon = false;
+		m_IsLose = false;
+		m_WinScreen.SetActive(false);
+		m_LoseScreen.SetActive(false);
 	}
 
 	private void OnWin()
@@ -68,12 +100,8 @@ public class BoardDisplay : MonoBehaviour
 		{
 			if (m_IsLose || m_IsWon)
 			{
-				m_IsWon = false;
-				m_IsLose = false;
-				m_WinScreen.SetActive(false);
-				m_LoseScreen.SetActive(false);
 				m_Board.ResetBoard();
-				ResetDraw();
+				Reset();
 			}
 			else
 			{
@@ -84,21 +112,6 @@ public class BoardDisplay : MonoBehaviour
 					m_Board.ClickTile((int)position.x, (int)position.y);
 			}
 			RedrawBoard();
-		}
-	}
-
-	void ResetDraw()
-	{
-		for (int x = 0; x < m_Board.m_Width; ++x)
-		{
-			for (int y = 0; y < m_Board.m_Height; ++y)
-			{
-				m_Tiles[x, y].background.sprite = m_Cover;
-				m_Tiles[x, y].foreground.gameObject.SetActive(true);
-				m_Tiles[x, y].foreground.sprite = null;
-				m_Tiles[x, y].foreground.gameObject.SetActive(false);
-				m_Tiles[x, y].mineCount.text = "";
-			}
 		}
 	}
 
@@ -119,6 +132,7 @@ public class BoardDisplay : MonoBehaviour
 				}
 				else
 				{ // is cleared
+					m_Tiles[x, y].foreground.gameObject.SetActive(false);
 					m_Tiles[x, y].foreground.sprite = null;
 					m_Tiles[x, y].background.sprite = m_Background;
 					if (m_Board.m_Tiles[x, y].isMine)
@@ -129,7 +143,7 @@ public class BoardDisplay : MonoBehaviour
 					else if (m_Board.m_Tiles[x, y].adjacentMineCount != 0)
 					{
 						m_Tiles[x, y].mineCount.text = m_Board.m_Tiles[x, y].adjacentMineCount.ToString();
-						m_Tiles[x, y].mineCount.color = colors[m_Board.m_Tiles[x, y].adjacentMineCount-1];
+						m_Tiles[x, y].mineCount.color = colors[m_Board.m_Tiles[x, y].adjacentMineCount - 1];
 					}
 				}
 			}
