@@ -133,6 +133,15 @@ public class Board : MonoBehaviour
 		{
 			m_Tiles[x, y].isCleared = true;
 			m_OnLose.Invoke();
+
+			for (int i = 0; i < m_Width; ++i)
+			{
+				for (int j = 0; j < m_Height; ++j)
+				{
+					m_Tiles[i, j].isCleared |= m_Tiles[i, j].isMine;
+					m_Tiles[i, j].isFlagged &= !m_Tiles[i, j].isMine;
+				}
+			}
 		}
 		else if (!m_Tiles[x, y].isCleared && !m_Tiles[x, y].isFlagged)
 		{
