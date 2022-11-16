@@ -63,7 +63,8 @@ public class BoardDisplay : MonoBehaviour
 	void Update()
 	{
 		Vector2 position;
-		if (InputWraper.GetInputLocationOnRect(m_RectTransform, out position))
+		bool isHeld;
+		if (InputWraper.GetInputLocationOnRect(m_RectTransform, out position, out isHeld))
 		{
 			if (m_IsLose || m_IsWon)
 			{
@@ -77,7 +78,10 @@ public class BoardDisplay : MonoBehaviour
 			else
 			{
 				position = (position / m_RectTransform.sizeDelta) * new Vector2(m_Board.m_Width, m_Board.m_Height);
-				m_Board.ClickTile((int)position.x, (int)position.y);
+				if (isHeld)
+					m_Board.ToggleFlag((int)position.x, (int)position.y);
+				else
+					m_Board.ClickTile((int)position.x, (int)position.y);
 			}
 			RedrawBoard();
 		}
