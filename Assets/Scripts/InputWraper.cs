@@ -6,19 +6,27 @@ using UnityEngine;
 public class InputWraper
 {
 
+	private static float s_TouchBeginTime = 0;
 	
 	public static bool GetInputLocationOnRect(RectTransform rect, out Vector2 tapPosition, out bool isHeld)
 	{
-		bool isClicked = Input.GetMouseButtonDown((int)MouseButton.Left);
+		bool isClicked = Input.GetMouseButtonDown((int)MouseButton.Left) && Input.touchCount == 0;
 		bool isRightClicked = Input.GetMouseButtonDown((int)MouseButton.Right);
-		bool isTouch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+		bool isTouch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended;
+		bool isTouchBegin = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
 		isHeld = false;
 
+		if (isTouchBegin)
+			s_TouchBeginTime = Time.time;
+
 		if (isRightClicked) isHeld = true;
-		if (isTouch && Input.GetTouch(0).deltaTime >= 1.0f / 20.0f) isHeld = true;
+		if (Input.touchCount > 0 && Time.time - s_TouchBeginTime >= 1.0f / 2.0f)
+		{
+			isHeld = true;
+			s_TouchBeginTime = Time.time;
+		}
 
-
-		if (isClicked || isRightClicked || isTouch)
+		if (isClicked || isHeld || isTouch)
 		{
 			Vector2 touchPosition = isTouch ? Input.GetTouch(0).position :(Vector2)Input.mousePosition;
 			Vector2 position;
