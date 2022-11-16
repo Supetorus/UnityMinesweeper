@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,8 @@ public class BoardDisplay : MonoBehaviour
 
 	private bool m_IsWon = false;
 	private bool m_IsLose = false;
+	private float m_CurrentTime = 0;
+	private float m_Highscore = int.MaxValue;
 
 	public TileDisplay m_TilePrefab;
 	public Sprite m_Background;
@@ -23,6 +26,8 @@ public class BoardDisplay : MonoBehaviour
 	public GameObject m_WinScreen;
 	public GameObject m_LoseScreen;
 	public Color[] colors = new Color[8];
+	public TMP_Text m_HighscoreText;
+	public TMP_Text m_CurrentTimeText;
 
 	void Start()
 	{
@@ -74,6 +79,7 @@ public class BoardDisplay : MonoBehaviour
 				//tile.mineCount.color = Color.black;
 			}
 		}
+		m_CurrentTime = 0;
 		m_IsWon = false;
 		m_IsLose = false;
 		m_WinScreen.SetActive(false);
@@ -82,6 +88,9 @@ public class BoardDisplay : MonoBehaviour
 
 	private void OnWin()
 	{
+		if (m_CurrentTime < m_Highscore) m_Highscore = m_CurrentTime;
+		m_HighscoreText.text = m_Highscore.ToString("#.##");
+
 		m_IsWon = true;
 		m_WinScreen.SetActive(true);
 	}
@@ -94,6 +103,8 @@ public class BoardDisplay : MonoBehaviour
 
 	void Update()
 	{
+		if (!m_IsWon && !m_IsLose) m_CurrentTime += Time.deltaTime;
+		m_CurrentTimeText.text = m_CurrentTime.ToString("#.##");
 		Vector2 position;
 		bool isHeld;
 		if (InputWraper.GetInputLocationOnRect(m_RectTransform, out position, out isHeld))
