@@ -10,6 +10,7 @@ public class Board : MonoBehaviour
 	public struct Tile
 	{
 		public int adjacentMineCount;
+		public int adjacentFlagCount;
 		public bool isMine;
 		public bool isCleared;
 		public bool isFlagged;
@@ -34,6 +35,7 @@ public class Board : MonoBehaviour
 		RectTransform t = GetComponent<RectTransform>();
 
 		m_OnLose = new UnityEvent();
+		m_OnLose.AddListener(Detonate);
 		m_OnWin = new UnityEvent();
 		rng = new System.Random();
 
@@ -129,67 +131,89 @@ public class Board : MonoBehaviour
 			GenerateTiles();
 		}
 
-		if (m_Tiles[x, y].isMine && !m_Tiles[x, y].isFlagged)
+		if (m_Tiles[x, y].isCleared && m_Tiles[x, y].adjacentMineCount > 0 && m_Tiles[x, y].adjacentMineCount == m_Tiles[x, y].adjacentFlagCount)
 		{
-			m_Tiles[x, y].isCleared = true;
-			m_OnLose.Invoke();
-
-			for (int i = 0; i < m_Width; ++i)
-			{
-				for (int j = 0; j < m_Height; ++j)
-				{
-					m_Tiles[i, j].isCleared |= m_Tiles[i, j].isMine;
-					m_Tiles[i, j].isFlagged &= !m_Tiles[i, j].isMine;
-				}
-			}
+			Stack<Vector2Int> tiles = new Stack<Vector2Int>();
+			tiles.Push(new Vector2Int(x - 1, y));
+			tiles.Push(new Vector2Int(x + 1, y));
+			tiles.Push(new Vector2Int(x, y - 1));
+			tiles.Push(new Vector2Int(x, y + 1));
+			tiles.Push(new Vector2Int(x - 1, y - 1));
+			tiles.Push(new Vector2Int(x - 1, y + 1));
+			tiles.Push(new Vector2Int(x + 1, y - 1));
+			tiles.Push(new Vector2Int(x + 1, y + 1));
+			Cascade(tiles);
 		}
-		else if (!m_Tiles[x, y].isCleared && !m_Tiles[x, y].isFlagged)
+		else
 		{
-			if (m_Tiles[x, y].adjacentMineCount == 0)
+			Stack<Vector2Int> tiles = new Stack<Vector2Int>();
+			tiles.Push(new Vector2Int(x, y));
+			Cascade(tiles);
+		}
+	}
+
+	private void Cascade(Stack<Vector2Int> tiles)
+	{
+		while (tiles.Count > 0)
+		{
+			Vector2Int pos = tiles.Pop();
+
+			if (pos.x >= 0 && pos.y >= 0 && pos.x < m_Width && pos.y < m_Height && !m_Tiles[pos.x, pos.y].isCleared)
 			{
-				Stack<Vector2Int> tiles = new Stack<Vector2Int>();
-				tiles.Push(new Vector2Int(x, y));
-
-				while (tiles.Count > 0)
+				if (m_Tiles[pos.x, pos.y].isMine && !m_Tiles[pos.x, pos.y].isFlagged)
 				{
-					Vector2Int pos = tiles.Pop();
+					m_OnLose.Invoke();
+					return;
+				}
+				else if(!m_Tiles[pos.x, pos.y].isMine)
+				{
+					m_Tiles[pos.x, pos.y].isCleared = true;
+					m_Tiles[pos.x, pos.y].isFlagged = false;
+					++m_ClearedTileCount;
 
-					if (pos.x >= 0 && pos.y >= 0 && pos.x < m_Width && pos.y < m_Height && !m_Tiles[pos.x, pos.y].isCleared)
+					if (m_Tiles[pos.x, pos.y].adjacentMineCount == 0)
 					{
-						m_Tiles[pos.x, pos.y].isCleared = true;
-						m_Tiles[pos.x, pos.y].isFlagged = false;
-						++m_ClearedTileCount;
-
-						if (m_Tiles[pos.x, pos.y].adjacentMineCount == 0)
-						{
-							tiles.Push(new Vector2Int(pos.x - 1, pos.y));
-							tiles.Push(new Vector2Int(pos.x + 1, pos.y));
-							tiles.Push(new Vector2Int(pos.x, pos.y - 1));
-							tiles.Push(new Vector2Int(pos.x, pos.y + 1));
-							tiles.Push(new Vector2Int(pos.x - 1, pos.y - 1));
-							tiles.Push(new Vector2Int(pos.x + 1, pos.y + 1));
-							tiles.Push(new Vector2Int(pos.x - 1, pos.y + 1));
-							tiles.Push(new Vector2Int(pos.x + 1, pos.y - 1));
-						}
+						tiles.Push(new Vector2Int(pos.x - 1, pos.y));
+						tiles.Push(new Vector2Int(pos.x + 1, pos.y));
+						tiles.Push(new Vector2Int(pos.x, pos.y - 1));
+						tiles.Push(new Vector2Int(pos.x, pos.y + 1));
+						tiles.Push(new Vector2Int(pos.x - 1, pos.y - 1));
+						tiles.Push(new Vector2Int(pos.x + 1, pos.y + 1));
+						tiles.Push(new Vector2Int(pos.x - 1, pos.y + 1));
+						tiles.Push(new Vector2Int(pos.x + 1, pos.y - 1));
 					}
 				}
 			}
-			else
-			{
-				m_Tiles[x, y].isCleared = true;
-				++m_ClearedTileCount;
-			}
+		}
 
-			if (m_ClearedTileCount == m_TileCount - m_MineTileCount)
-			{
-				m_OnWin.Invoke();
-			}
+		if (m_ClearedTileCount == m_TileCount - m_MineTileCount)
+		{
+			m_OnWin.Invoke();
 		}
 	}
 
 	public void ToggleFlag(int x, int y)
 	{
 		m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
+
+		int change = m_Tiles[x, y].isFlagged ? 1 : -1;
+
+		if (x > 0)
+		{
+			m_Tiles[x - 1, y].adjacentFlagCount += change;
+			if (y > 0) { m_Tiles[x - 1, y - 1].adjacentFlagCount += change; }
+			if (y < m_Height - 1) { m_Tiles[x - 1, y + 1].adjacentFlagCount += change; }
+		}
+
+		if (x < m_Width - 1)
+		{
+			m_Tiles[x + 1, y].adjacentFlagCount += change;
+			if (y > 0) { m_Tiles[x + 1, y - 1].adjacentFlagCount += change; }
+			if (y < m_Height - 1) { m_Tiles[x + 1, y + 1].adjacentFlagCount += change; }
+		}
+
+		if (y > 0) { m_Tiles[x, y - 1].adjacentFlagCount += change; }
+		if (y < m_Height - 1) { m_Tiles[x, y + 1].adjacentFlagCount += change; }
 	}
 
 	public void ResetBoard()
@@ -206,6 +230,19 @@ public class Board : MonoBehaviour
 				m_Tiles[x, y].isFlagged = false;
 				m_Tiles[x, y].isSafe = false;
 				m_Tiles[x, y].adjacentMineCount = 0;
+				m_Tiles[x, y].adjacentFlagCount = 0;
+			}
+		}
+	}
+
+	private void Detonate()
+	{
+		for (int x = 0; x < m_Width; ++x)
+		{
+			for (int y = 0; y < m_Height; ++y)
+			{
+				m_Tiles[x, y].isCleared |= m_Tiles[x, y].isMine;
+				m_Tiles[x, y].isFlagged &= !m_Tiles[x, y].isMine;
 			}
 		}
 	}
