@@ -194,26 +194,29 @@ public class Board : MonoBehaviour
 
 	public void ToggleFlag(int x, int y)
 	{
-		m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
-
-		int change = m_Tiles[x, y].isFlagged ? 1 : -1;
-
-		if (x > 0)
+		if (!m_Tiles[x, y].isCleared)
 		{
-			m_Tiles[x - 1, y].adjacentFlagCount += change;
-			if (y > 0) { m_Tiles[x - 1, y - 1].adjacentFlagCount += change; }
-			if (y < m_Height - 1) { m_Tiles[x - 1, y + 1].adjacentFlagCount += change; }
-		}
+			m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
 
-		if (x < m_Width - 1)
-		{
-			m_Tiles[x + 1, y].adjacentFlagCount += change;
-			if (y > 0) { m_Tiles[x + 1, y - 1].adjacentFlagCount += change; }
-			if (y < m_Height - 1) { m_Tiles[x + 1, y + 1].adjacentFlagCount += change; }
-		}
+			int change = m_Tiles[x, y].isFlagged ? 1 : -1;
 
-		if (y > 0) { m_Tiles[x, y - 1].adjacentFlagCount += change; }
-		if (y < m_Height - 1) { m_Tiles[x, y + 1].adjacentFlagCount += change; }
+			if (x > 0)
+			{
+				m_Tiles[x - 1, y].adjacentFlagCount += change;
+				if (y > 0) { m_Tiles[x - 1, y - 1].adjacentFlagCount += change; }
+				if (y < m_Height - 1) { m_Tiles[x - 1, y + 1].adjacentFlagCount += change; }
+			}
+
+			if (x < m_Width - 1)
+			{
+				m_Tiles[x + 1, y].adjacentFlagCount += change;
+				if (y > 0) { m_Tiles[x + 1, y - 1].adjacentFlagCount += change; }
+				if (y < m_Height - 1) { m_Tiles[x + 1, y + 1].adjacentFlagCount += change; }
+			}
+
+			if (y > 0) { m_Tiles[x, y - 1].adjacentFlagCount += change; }
+			if (y < m_Height - 1) { m_Tiles[x, y + 1].adjacentFlagCount += change; }
+		}
 	}
 
 	public void ResetBoard()
