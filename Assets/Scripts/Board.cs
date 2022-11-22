@@ -104,7 +104,7 @@ public class Board : MonoBehaviour
 		}
 	}
 
-	public void ClickTile(int x, int y)
+	public void ClickTile(int x, int y, out int clearCount, out int adjecentMines)
 	{
 		if (m_FirstClick)
 		{
@@ -148,11 +148,12 @@ public class Board : MonoBehaviour
 		{
 			Stack<Vector2Int> tiles = new Stack<Vector2Int>();
 			tiles.Push(new Vector2Int(x, y));
+			adjecentMines = m_Tiles[x, y].adjacentMineCount;
 			Cascade(tiles);
 		}
 	}
 
-	private void Cascade(Stack<Vector2Int> tiles)
+	private void Cascade(Stack<Vector2Int> tiles, out int clearCount)
 	{
 		while (tiles.Count > 0)
 		{
@@ -170,6 +171,7 @@ public class Board : MonoBehaviour
 					m_Tiles[pos.x, pos.y].isCleared = true;
 					m_Tiles[pos.x, pos.y].isFlagged = false;
 					++m_ClearedTileCount;
+					++clearCount;
 
 					if (m_Tiles[pos.x, pos.y].adjacentMineCount == 0)
 					{
@@ -192,7 +194,7 @@ public class Board : MonoBehaviour
 		}
 	}
 
-	public void ToggleFlag(int x, int y)
+	public void ToggleFlag(int x, int y, out bool placed)
 	{
 		if (!m_Tiles[x, y].isCleared)
 		{

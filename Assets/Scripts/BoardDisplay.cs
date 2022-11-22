@@ -120,9 +120,18 @@ public class BoardDisplay : MonoBehaviour
 			{
 				position = (position / m_RectTransform.sizeDelta) * new Vector2(m_Board.m_Width, m_Board.m_Height);
 				if (isHeld)
-					m_Board.ToggleFlag((int)position.x, (int)position.y);
+				{
+					bool placed;
+					m_Board.ToggleFlag((int)position.x, (int)position.y, out placed);
+					//TODO: play different sound based on whether the flag was placed
+				}
 				else
-					m_Board.ClickTile((int)position.x, (int)position.y);
+				{
+					int clearCount;
+					int adjacentMines;
+					m_Board.ClickTile((int)position.x, (int)position.y, out clearCount, out adjacentMines);
+					//TODO: play sounds based on clear count and adjacent mines
+				}
 			}
 			RedrawBoard();
 		}
