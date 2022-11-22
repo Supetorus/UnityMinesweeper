@@ -11,6 +11,7 @@ public class BoardDisplay : MonoBehaviour
 	private RectTransform m_RectTransform;
 	private Board m_Board;
 	private GridLayoutGroup m_GridLayout;
+	private AudioSource m_Audio;
 	private TileDisplay[,] m_Tiles;
 
 	private bool m_IsWon = false;
@@ -35,6 +36,7 @@ public class BoardDisplay : MonoBehaviour
 		m_RectTransform = GetComponent<RectTransform>();
 		m_Board = GetComponent<Board>();
 		m_GridLayout = GetComponent<GridLayoutGroup>();
+		m_Audio = GetComponent<AudioSource>();
 
 		// Event Listeners
 		m_Board.m_OnLose.AddListener(OnLose);
