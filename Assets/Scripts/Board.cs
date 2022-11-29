@@ -104,7 +104,7 @@ public class Board : MonoBehaviour
 		}
 	}
 
-	public void ClickTile(int x, int y, out int clearCount, out int adjecentMines)
+	public void ClickTile(int x, int y, out bool cascade, out int adjecentMines)
 	{
 		if (m_FirstClick)
 		{
@@ -142,19 +142,21 @@ public class Board : MonoBehaviour
 			tiles.Push(new Vector2Int(x - 1, y + 1));
 			tiles.Push(new Vector2Int(x + 1, y - 1));
 			tiles.Push(new Vector2Int(x + 1, y + 1));
-			Cascade(tiles);
+			Cascade(tiles, out cascade, out adjecentMines);
 		}
 		else
 		{
 			Stack<Vector2Int> tiles = new Stack<Vector2Int>();
 			tiles.Push(new Vector2Int(x, y));
-			adjecentMines = m_Tiles[x, y].adjacentMineCount;
-			Cascade(tiles);
+			Cascade(tiles, out cascade, out adjecentMines);
 		}
 	}
 
-	private void Cascade(Stack<Vector2Int> tiles, out int clearCount)
+	private void Cascade(Stack<Vector2Int> tiles, out bool cascade, out int adjacentMines)
 	{
+		cascade = false;
+		adjacentMines = 0;
+
 		while (tiles.Count > 0)
 		{
 			Vector2Int pos = tiles.Pop();
@@ -171,10 +173,11 @@ public class Board : MonoBehaviour
 					m_Tiles[pos.x, pos.y].isCleared = true;
 					m_Tiles[pos.x, pos.y].isFlagged = false;
 					++m_ClearedTileCount;
-					++clearCount;
+					adjacentMines = Mathf.Max(m_Tiles[pos.x, pos.y].adjacentMineCount, adjacentMines);
 
 					if (m_Tiles[pos.x, pos.y].adjacentMineCount == 0)
 					{
+						cascade = true;
 						tiles.Push(new Vector2Int(pos.x - 1, pos.y));
 						tiles.Push(new Vector2Int(pos.x + 1, pos.y));
 						tiles.Push(new Vector2Int(pos.x, pos.y - 1));
@@ -196,9 +199,12 @@ public class Board : MonoBehaviour
 
 	public void ToggleFlag(int x, int y, out bool placed)
 	{
+		placed = false;
+
 		if (!m_Tiles[x, y].isCleared)
 		{
 			m_Tiles[x, y].isFlagged = !m_Tiles[x, y].isFlagged;
+			placed = m_Tiles[x, y].isFlagged;
 
 			int change = m_Tiles[x, y].isFlagged ? 1 : -1;
 

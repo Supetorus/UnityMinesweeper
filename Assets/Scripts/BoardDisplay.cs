@@ -29,6 +29,7 @@ public class BoardDisplay : MonoBehaviour
 	public Color[] colors = new Color[8];
 	public TMP_Text m_HighscoreText;
 	public TMP_Text m_CurrentTimeText;
+	public AudioClip[] m_AudioClips;
 
 	void Start()
 	{
@@ -101,6 +102,7 @@ public class BoardDisplay : MonoBehaviour
 	{
 		m_IsLose = true;
 		m_LoseScreen.SetActive(true);
+		m_Audio.PlayOneShot(m_AudioClips[0]);
 	}
 
 	void Update()
@@ -123,14 +125,19 @@ public class BoardDisplay : MonoBehaviour
 				{
 					bool placed;
 					m_Board.ToggleFlag((int)position.x, (int)position.y, out placed);
-					//TODO: play different sound based on whether the flag was placed
+					m_Audio.PlayOneShot(m_AudioClips[placed ? 10 : 11]);
 				}
 				else
 				{
-					int clearCount;
-					int adjacentMines;
-					m_Board.ClickTile((int)position.x, (int)position.y, out clearCount, out adjacentMines);
-					//TODO: play sounds based on clear count and adjacent mines
+					m_Board.ClickTile((int)position.x, (int)position.y, out bool cascade, out int adjacentMines);
+					if(cascade)
+					{
+						m_Audio.PlayOneShot(m_AudioClips[9]);
+					}
+					else if (adjacentMines > 0)
+					{
+						m_Audio.PlayOneShot(m_AudioClips[adjacentMines]);
+					}
 				}
 			}
 			RedrawBoard();
