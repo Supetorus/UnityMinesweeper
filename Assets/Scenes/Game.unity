@@ -979,7 +979,7 @@ MonoBehaviour:
   - {r: 0.29803923, g: 0.2901961, b: 0.29803923, a: 1}
   m_HighscoreText: {fileID: 794363293}
   m_CurrentTimeText: {fileID: 374793277}
-  clips:
+  m_AudioClips:
   - {fileID: 8300000, guid: 2cd644a6a88ea7740a3222d8b4c46e57, type: 3}
   - {fileID: 8300000, guid: 503d265e6415c464384051da753258f6, type: 3}
   - {fileID: 8300000, guid: ab0cf111dcf095b44ae256e5410550b2, type: 3}
@@ -989,6 +989,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 558858ae12c19ca408dd2c959c9da086, type: 3}
   - {fileID: 8300000, guid: 164064092e2e6cf489b98889c7fa1716, type: 3}
   - {fileID: 8300000, guid: fb046fa4becefa9439c31bc134ca7bcb, type: 3}
+  - {fileID: 8300000, guid: 7a2d3a4c6c90eb14ab28373eec602a4c, type: 3}
+  - {fileID: 8300000, guid: 5a47cb8039861774eb890518a8510be3, type: 3}
+  - {fileID: 8300000, guid: f78566a8612fe7d4b98b14e8f6ec76b6, type: 3}
 --- !u!82 &1136907755
 AudioSource:
   m_ObjectHideFlags: 0
