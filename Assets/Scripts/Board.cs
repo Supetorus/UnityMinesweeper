@@ -23,6 +23,7 @@ public class Board : MonoBehaviour
 	public float m_TileSize { get; private set; }
 	public UnityEvent m_OnLose { get; private set; }
 	public UnityEvent m_OnWin { get; private set; }
+	public UnityEvent m_OnStart { get; private set; }
 
 	private System.Random rng;
 	private int m_TileCount;
@@ -37,6 +38,7 @@ public class Board : MonoBehaviour
 		m_OnLose = new UnityEvent();
 		m_OnLose.AddListener(Detonate);
 		m_OnWin = new UnityEvent();
+		m_OnStart = new UnityEvent();
 		rng = new System.Random();
 
 		m_TileSize = t.sizeDelta.x / 8.0f;
@@ -108,6 +110,7 @@ public class Board : MonoBehaviour
 	{
 		if (m_FirstClick)
 		{
+			m_OnStart.Invoke();
 			m_FirstClick = false;
 			m_Tiles[x, y].isSafe = true;
 

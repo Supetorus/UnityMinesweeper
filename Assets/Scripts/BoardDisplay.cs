@@ -14,8 +14,9 @@ public class BoardDisplay : MonoBehaviour
 	private AudioSource m_Audio;
 	private TileDisplay[,] m_Tiles;
 
-	private bool m_IsWon = false;
+	private bool m_IsWon = true;
 	private bool m_IsLose = false;
+	private bool m_DoTimer = false;
 	private float m_CurrentTime = 0;
 	private float m_Highscore = int.MaxValue;
 
@@ -42,6 +43,7 @@ public class BoardDisplay : MonoBehaviour
 		// Event Listeners
 		m_Board.m_OnLose.AddListener(OnLose);
 		m_Board.m_OnWin.AddListener(OnWin);
+		m_Board.m_OnStart.AddListener(OnStart);
 
 		// Miscellaneous
 		m_GridLayout.cellSize = new Vector2(m_Board.m_TileSize, m_Board.m_TileSize);
@@ -91,6 +93,7 @@ public class BoardDisplay : MonoBehaviour
 
 	private void OnWin()
 	{
+		m_DoTimer = false;
 		if (m_CurrentTime < m_Highscore) m_Highscore = m_CurrentTime;
 		m_HighscoreText.text = m_Highscore.ToString("#.##");
 
@@ -100,14 +103,20 @@ public class BoardDisplay : MonoBehaviour
 
 	private void OnLose()
 	{
+		m_DoTimer = false;
 		m_IsLose = true;
 		m_LoseScreen.SetActive(true);
 		m_Audio.PlayOneShot(m_AudioClips[0]);
 	}
 
+	private void OnStart()
+	{
+		m_DoTimer = true;
+	}
+
 	void Update()
 	{
-		if (!m_IsWon && !m_IsLose) m_CurrentTime += Time.deltaTime;
+		if (m_DoTimer) m_CurrentTime += Time.deltaTime;
 		m_CurrentTimeText.text = Math.Round(m_CurrentTime, 2).ToString("F2");
 		Vector2 position;
 		bool isHeld;
