@@ -108,7 +108,7 @@ public class BoardDisplay : MonoBehaviour
 	void Update()
 	{
 		if (!m_IsWon && !m_IsLose) m_CurrentTime += Time.deltaTime;
-		m_CurrentTimeText.text = m_CurrentTime.ToString("#.##");
+		m_CurrentTimeText.text = Math.Round(m_CurrentTime, 2).ToString("F2");
 		Vector2 position;
 		bool isHeld;
 		if (InputWraper.GetInputLocationOnRect(m_RectTransform, out position, out isHeld))
